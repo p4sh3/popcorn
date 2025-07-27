@@ -7,7 +7,7 @@ import { morganMiddleware } from "./middleware/morgan.middleware.js";
 export const app = express();
 
 app.use(morganMiddleware)
-app.use("/movies", moviesRouter);
+app.use("/api/movies", moviesRouter);
 
 const PORT = process.env.PORT ?? 0;
 
