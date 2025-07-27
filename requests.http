@@ -1,0 +1,10 @@
+GET http://localhost:3000/movies/test HTTP/1.1
+
+### 
+
+GET http://localhost:3000/movies/los-4-fantasticos-primeros-pasos/schedules?date=2025-07-27&country=sv HTTP/1.1
+
+###
+
+GET http://localhost:3000/movies?country=sv HTTP/1.1
+
