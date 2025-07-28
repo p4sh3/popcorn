@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 import { moviesRouter } from "./routes/movies.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
@@ -12,6 +13,7 @@ app.use("/api/movies", moviesRouter);
 const PORT = process.env.PORT ?? 0;
 
 app.use(errorHandler);
+app.use(cors());
 
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err.message);

@@ -15,7 +15,6 @@ const COUNTRIES = {
 
 
 export class MovieController {
-  constructor(parameters) {}
 
   static async getAll(req, res) {
     const { country } = req.query;
@@ -34,23 +33,26 @@ export class MovieController {
   }
 
   static async getMovieSchedules(req, res) {
-    const { date, country } = req.query;
+    const { country } = req.query;
     const { name } = req.params;
 
-    if (!date || !country || !TLDs[country]) throw new AppError("Missing or invalid parameters", 400);
+    if (!country || !TLDs[country]) throw new AppError("Missing or invalid parameters", 400);
 
-    const { ajax_url, events_security, current_edi } = await this.#getParams({name, country});
+    const { dates, ajax_url, events_security, current_edi } = await this.#getParams({name, country});
 
-    const url =
-      `${ajax_url}?action=cw_get_events_options` +
-      `&events_security=${events_security}` +
-      `&events_date=${date}` +
-      `&current_edi=${current_edi}`;
+    const fetchPromises = dates.map(async date => {
+      const url = `${ajax_url}?action=cw_get_events_options` +
+                  `&events_security=${events_security}` +
+                  `&events_date=${date}` +
+                  `&current_edi=${current_edi}`;
 
-    const htmlContent = await this.#fetchData({url, type:"text"});
-    
-    const projections = parseHTML(htmlContent, COUNTRIES[country], name, date);
-    res.json(projections);
+      const html = await this.#fetchData({ url, type: "text" });
+      return parseHTML(html, COUNTRIES[country], name, date);
+    });
+
+    const nestedProjections = await Promise.all(fetchPromises);
+
+    res.json(nestedProjections.flat());
   }
 
   static async #fetchData({url, type = "json"}) {
@@ -82,11 +84,21 @@ export class MovieController {
     const url = `https://cinepolis${TLDs[country]}/${name}`
 
     const html = await this.#fetchData({url, type:"text"});
+
+
+    const datesMatch = html.match(/data-dates=(['"])([^'"]*)\1/)
+    let dates;
+
+    if (datesMatch) {
+      dates = datesMatch[2].split('|');
+    }
+
     const reactPlugin = this.#parse({ key: "rpReactPlugin", html });
     const ajaxObj = this.#parse({ key: "ajaxObj", html });
     if (!reactPlugin || !ajaxObj) throw new AppError("Failed to retrieve required parameters", 500);
 
     return {
+      dates,
       current_edi: reactPlugin.single_movie,
       security: reactPlugin.ajax_nonce,
       ajax_url: ajaxObj.ajax_url,
