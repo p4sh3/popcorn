@@ -1,0 +1,21 @@
+node_modules
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# TypeScript cache
+*.tsbuildinfo
+
+.vercel

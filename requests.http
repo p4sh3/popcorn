@@ -1,0 +1,24 @@
+GET http://localhost:3000/api/movies/test HTTP/1.1
+
+### 
+
+GET http://localhost:3000/api/movies/andrea-bocelli-because-i-believe/schedules?country=cr HTTP/1.1
+
+###
+
+GET http://localhost:3000/api/movies?country=sv HTTP/1.1
+
+
+### PRODUCTION
+
+GET https://popcorn-ybfe.onrender.com/api/movies/test HTTP/1.1
+
+### 
+
+GET https://popcorn-ybfe.onrender.com/api/movies/los-4-fantasticos-primeros-pasos/schedules?country=cr HTTP/1.1
+
+###
+
+GET https://popcorn-ybfe.onrender.com/api/movies?country=sv HTTP/1.1
+
+
