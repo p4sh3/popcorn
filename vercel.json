@@ -4,5 +4,5 @@
   "buildCommand": "pnpm build",
   "devCommand": "pnpm dev",
   "framework": null,
-  "outputDirectory": "."
+  "outputDirectory": "./api"
 }
